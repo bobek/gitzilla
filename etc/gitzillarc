@@ -88,6 +88,13 @@
 #      include the diffstat (a list of changed files with a histogram).
 #      If False, the diffstat is not included. True or False.
 #
+#  * include_repository_name
+#
+#      default: False
+#
+#      prepend repository name (the last component of pwd) to message
+#      If False, the name is not added. True or False.
+#
 #  * separator
 #
 #      default: ~.~.~.~.~.~.~.~.~.~.~.~.~.~.~.~.
@@ -111,12 +118,12 @@
 #          - Bug #123
 #
 #  * git_ref_prefix
-#        
+#
 #      the string which must start a git reference for its commits to be
 #      processed. Defaults to 'refs/heads/' so that we don't process 'tags/' and
 #      run the risk of processing many commits multiple times. You can set it
 #      to the empty string to process all git references.
-#  
+#
 #  * logfile
 #
 #      the file to log to. Must be writable by the uid of the git

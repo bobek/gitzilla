@@ -6,13 +6,14 @@ hooks - git hooks provided by gitzilla.
 
 import re
 import sys
+import os
 from utils import get_changes, init_bugzilla, get_bug_status, notify_and_exit
 from gitzilla import sDefaultSeparator, sDefaultFormatSpec, oDefaultBugRegex, sDefaultRefPrefix
 from gitzilla import NullLogger
 import traceback
 
 
-def post_receive(sBZUrl, sBZUser=None, sBZPasswd=None, sFormatSpec=None, oBugRegex=None, sSeparator=None, logger=None, bz_init=None, sRefPrefix=None, bIncludeDiffStat=True, aasPushes=None):
+def post_receive(sBZUrl, sBZUser=None, sBZPasswd=None, sFormatSpec=None, oBugRegex=None, sSeparator=None, logger=None, bz_init=None, sRefPrefix=None, bIncludeDiffStat=True, aasPushes=None, bIncludeRepositoryName=False):
   """
   a post-recieve hook handler which extracts bug ids and adds the commit
   info to the comment. If multiple bug ids are found, the comment is added
@@ -98,7 +99,11 @@ def post_receive(sBZUrl, sBZUser=None, sBZPasswd=None, sFormatSpec=None, oBugReg
     logger.debug("oldrev: '%s', newrev: '%s'" % (sOldRev, sNewRev))
     asChangeLogs = get_changes(sOldRev, sNewRev, sFormatSpec, sSeparator, bIncludeDiffStat, sRefName, sRefPrefix)
 
+    (sRepoDirHead, sRepoDirTail) = os.path.split(os.getcwd())
+
     for sMessage in asChangeLogs:
+      if bIncludeRepositoryName is True:
+        sMessage = "repository  %s\n%s" % (sRepoDirTail, sMessage)
       logger.debug("Considering commit:\n%s" % (sMessage,))
       oMatch = re.search(oBugRegex, sMessage)
       if oMatch is None:
